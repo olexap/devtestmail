@@ -1,0 +1,2 @@
+# Credentials file – never commit this
+.env

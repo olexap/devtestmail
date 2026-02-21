@@ -1,0 +1,49 @@
+# Server identity
+myhostname = devtestmail
+mydomain = devtestmail.local
+myorigin = $mydomain
+
+# Listen on all interfaces
+inet_interfaces = all
+inet_protocols = ipv4
+
+# Accept connections from loopback and private (RFC 1918) networks only.
+# Docker's default bridge (172.17.x.x) and compose networks (172.x/192.168.x)
+# all fall within these ranges.  Do NOT expose ports 25/587 to the public
+# internet – this server is intentionally configured as an open relay for
+# local testing and must never be reachable from untrusted networks.
+mynetworks = 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+# relay_domains = * combined with transport_maps ensures any domain is accepted
+# and delivered locally; never relayed out.
+relay_domains = *
+smtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination
+smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination
+
+# Never send mail outside
+relayhost =
+smtp_dns_support_level = disabled
+default_transport = error
+relay_transport = error
+
+# Route all mail through the local transport so it is always delivered inside
+# the container regardless of the recipient domain.
+transport_maps = hash:/etc/postfix/transport
+
+# Local delivery – Maildir format under the user's home directory
+home_mailbox = Maildir/
+mydestination = localhost, $myhostname, $mydomain, localdomain
+
+# Catch-all: if the local recipient does not exist, redirect to MAIL_USER.
+# The real value is injected at runtime by entrypoint.sh.
+local_recipient_maps =
+luser_relay = testuser
+
+# Misc
+smtpd_banner = devtestmail ESMTP
+biff = no
+append_dot_mydomain = no
+message_size_limit = 10240000
+compatibility_level = 3.6
+
+# Log to file so entrypoint can tail it (no syslog needed)
+maillog_file = /var/log/mail.log
