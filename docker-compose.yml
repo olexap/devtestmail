@@ -14,3 +14,8 @@ services:
       MAIL_USER: ${MAIL_USER:-testuser}
       MAIL_PASS: ${MAIL_PASS:-testpass}
       MAIL_DOMAIN: ${MAIL_DOMAIN:-devtestmail.local}
+    networks:
+      - mysqldev
+networks:
+  mysqldev:
+    external: true
