@@ -1,0 +1,2 @@
+# Route every domain through the local transport so mail is never relayed out.
+*   local:

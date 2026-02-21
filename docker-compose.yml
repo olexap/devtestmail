@@ -1,0 +1,16 @@
+services:
+  mail:
+    build: .
+    container_name: devtestmail
+    restart: unless-stopped
+    ports:
+      - "25:25"    # SMTP
+      - "587:587"  # SMTP submission
+      - "143:143"  # IMAP
+    environment:
+      # Override defaults via a .env file (see .env.example) or by setting
+      # these variables directly.  Never expose ports 25/587 to the public
+      # internet – this server is an open relay intended for local use only.
+      MAIL_USER: ${MAIL_USER:-testuser}
+      MAIL_PASS: ${MAIL_PASS:-testpass}
+      MAIL_DOMAIN: ${MAIL_DOMAIN:-devtestmail.local}
